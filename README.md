@@ -21,7 +21,7 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=...
 GOOGLE_SAFE_BROWSING_API_KEY=...
 SERPER_API_KEY=...
-GA_MEASUREMENT_ID=G-XXXXXXX   # Optional: Google Analytics 4
+GA_MEASUREMENT_ID=...   # Optional: Google Analytics 4
 ```
 
 Configuration is loaded via `dotenv`; no extra setup needed. If `GA_MEASUREMENT_ID` is set, the feed server includes GA4 and fires `page_view`, `post_view` (when posts enter viewport), and `article_click` when users click Further reading links (see Server and Analytics sections).
@@ -58,7 +58,8 @@ Run the server to browse posts in a feed:
 npm run server
 ```
 
-- **Feed** (`/`): Scrollable list of all posts, newest first. Uses Tailwind and GA4 (if `GA_MEASUREMENT_ID` is set).
+- **Feed** (`/`): List of all posts, newest first. Uses Tailwind and GA4 (if `GA_MEASUREMENT_ID` is set).
+- **Single post** (`/posts/:slug`): Full-page view of one post by slug (e.g. `/posts/what-is-langgraph`). Returns 404 if not found.
 - **API** (`/v1/posts`): JSON list of post filenames.
 - **Assets** (`/posts/*`): Images and other static assets.
 
