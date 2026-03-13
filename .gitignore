@@ -1,0 +1,9 @@
+.DS_Store
+
+coverage/
+metrics/
+node_modules/
+posts/
+.env
+
+*.log
