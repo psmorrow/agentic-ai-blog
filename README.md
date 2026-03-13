@@ -104,20 +104,20 @@ START
        │  verified → verifiedForkNode
        │  rejected → END
        │
-       └→ verifiedForkNode
-             ├→ categorizeNode        Extract topics (LLM)
+       └→ verifiedForkNode (fan-out)
+             ├→ categorizeNode              Extract topics (LLM)
              │
-             ├→ articlesNode          Search web (Serper)
-             │     → validateArticlesNode   SSRF, Safe Browsing, moderation
+             ├→ articlesNode                Search web (Serper)
+             │     → validateArticlesNode   SSRF, Safe Browsing, fetch, moderation
              │
-             └→ imageNode             Generate image prompt (LLM) → DALL·E
+             └→ imageNode                   Generate image prompt (LLM) → DALL·E
                    → validateImageNode      Moderation
              │
-             └→ outputNode    Assemble post data (all branches fan-in)
+             └→ outputNode (fan-in)         Assemble post data; all 3 branches converge
   → END
 ```
 
-After `verifyNode`, three branches run in parallel. `outputNode` waits for all three, then produces structured post data (JSON) written to `posts/`. The server renders posts from JSON using a single template.
+After `verifyNode`, three branches run in parallel. `outputNode` waits for all three, then produces structured post data. The CLI (`index.js`) downloads the image, saves it to `posts/`, and writes JSON. The server renders posts from JSON using `templates.js`.
 
 ### State
 
@@ -128,16 +128,30 @@ State flows through the graph and is merged at each step. Key fields:
 | `userInput` | Question (may be edited by `editorNode`) |
 | `audience`, `tone`, `length` | Optional style params |
 | `finalAnswer` | Q&A from answer/editor nodes |
-| `categories` | Comma-separated topics |
-| `articles` | Validated "Further reading" links |
+| `verified` | Whether `verifyNode` passed |
+| `rejectionReason` | Reason when rejected |
+| `categories` | Topic array (from `categorizeNode`) |
+| `articles` | Validated article text (newline-separated); converted to `{ title, url }[]` in `post` |
+| `articlesAttemptedCount` | Number of articles validated |
 | `imageUrl` | DALL·E image URL (or null if filtered) |
-| `post` | Structured post data (slug, title, bodyHtml, categories, articles, imageUrl) for JSON storage |
+| `post` | Structured post: `slug`, `title`, `bodyHtml`, `categories`, `articles`, `imageUrl`. After CLI: `imageUrl` replaced with `imageFilename`, `imageAlt` in stored JSON. |
+
+### Post-processing (CLI)
+
+After the graph completes, `index.js`:
+
+1. Fetches the image from `post.imageUrl`, saves it as `{timestamp}-{slug}.png` in `posts/`
+2. Adds `imageFilename` and `imageAlt` (primary category) to the post
+3. Removes `imageUrl` and writes the post as `{timestamp}-{slug}.json`
 
 ### Key Design Choices
 
-- **Verification**: `verifyNode` uses an LLM to check content policy, quality, and accuracy. On failure it logs the category and reason; the user sees a generic error.
+- **Conditional routing**: `verifyNode` returns `verified` or `rejected`; rejected flows route to END without throwing.
+- **Verification**: `verifyNode` uses an LLM to check content policy, quality, and accuracy. On failure it sets `rejectionReason`; the user sees a generic error.
 - **Articles**: Fetched via Serper, then validated (SSRF, Safe Browsing, fetch, content-type, moderation). Invalid links are dropped; the footer explains these are "relevant search results."
+- **Image**: DALL·E generates a URL; `validateImageNode` runs moderation; the CLI downloads and saves locally.
 - **Retries**: LLM and API nodes use an exponential backoff retry policy for transient errors.
+- **Metrics**: Node timing and run outcomes are logged to `metrics/blog_runs.jsonl`.
 
 ## Project Structure
 
@@ -157,6 +171,7 @@ src/
     ├── content.js     Slugify, extract answer, parse editor/categories
     ├── templates.js   Post fragments and page layouts (JSON → HTML)
     ├── html.js        escapeHtml, extract text for moderation
+    ├── logger.js      Logging (console wrapper, swappable)
     ├── metrics.js     Run metrics, node timing
     ├── search.js      Serper search wrapper
     └── urlValidation.js   SSRF checks, Google Safe Browsing
