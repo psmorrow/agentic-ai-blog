@@ -11,6 +11,24 @@ Learnings from building the Agentic AI Blog with an AI coding assistant. This pl
 3. **Verify and clean up** — Explicitly ask for cleanup, verification, and documentation updates.
 4. **Question assumptions** — Challenge design choices and ask for trade-offs when unsure.
 
+### Good Prompts & Interaction
+
+**What makes a good prompt**
+
+- **Specific** — "Add publication date to the header" beats "Make it better."
+- **Scoped** — One concern per request when possible; easier to review and iterate.
+- **Contextual** — Mention relevant files, behavior, or constraints (e.g. `@src/server.js` or "the feed page").
+- **Clear intent** — Say what you want and why when it helps (e.g. "so users can share" or "for SEO").
+
+**How to interact**
+
+- **Describe behavior, not the fix** — "The image doesn't load" lets the agent diagnose; "Fix the image route" may bias it toward the wrong solution.
+- **Ask for trade-offs before committing** — "What are the pros and cons of X vs Y?" before "Do X."
+- **Request cleanup explicitly** — Scripts, temp files, and dead code are often left behind; ask "Remove the script" or "Any dead code?"
+- **Confirm with short commit phrases** — Once you've decided: "Make it so," "Lets make that change," "Agree."
+
+These practices reinforce the core principles: specificity supports "ask before you act," scoping enables "iterate in small chunks," and explicit cleanup ties to "verify and clean up."
+
 ---
 
 ## Step-by-Step Workflow
