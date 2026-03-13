@@ -5,7 +5,7 @@
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 
-marked.setOptions({ gfm: true, breaks: true });
+marked.use({ gfm: true, breaks: true });
 
 /**
  * Converts markdown to safe HTML. Used for LLM answer body.

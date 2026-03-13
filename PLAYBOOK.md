@@ -2,6 +2,16 @@
 
 Learnings from building the Agentic AI Blog with an AI coding assistant. This playbook captures the patterns and steps that worked well.
 
+In this playbook, **assistant** refers to the AI agent or chat assistant in your IDE.
+
+---
+
+## Setup
+
+**Install Context7 before starting the project.** This enables the assistant to use current, version-specific documentation during implementation and helps avoid outdated syntax.
+
+**Configure the Playwright MCP server** so the assistant can run and inspect e2e tests in the browser.
+
 ---
 
 ## Core Principles
@@ -103,7 +113,8 @@ These practices reinforce the core principles: specificity supports "ask before 
 |------|------------|-----------------|
 | 6.1 | Target coverage | "Add unit tests for server.js to increase branch coverage above 80%." |
 | 6.2 | Create tests for new modules | "Create a template.js unit test. Move template.js into the utils folder." |
-| 6.3 | Fix lint issues | (assistant surfaced ESLint issues during PR prep) |
+| 6.3 | Add e2e tests for routes and rendering | "Add a Playwright e2e test that verifies routes, JSON API, and page rendering in the browser." |
+| 6.4 | Fix lint issues | (assistant surfaced ESLint issues during PR prep) |
 
 **Takeaway:** Tie test requests to concrete goals (e.g., coverage threshold) or to new files.
 
@@ -152,6 +163,7 @@ These practices reinforce the core principles: specificity supports "ask before 
 3. **Ask "why" and "should we"** — e.g., "In the .gitignore why are the *.log & .DS_Store entries in there?" to learn conventions.
 4. **Batch migrations** — "Migrate the current post html files to json files" after a structural change.
 5. **Keep layout decisions explicit** — "Should config be in root along with the env files?" before moving files.
+6. **Use browser tests for rendering** — Add Playwright (or similar) so the assistant can run e2e tests and surface UI issues instead of relying on manual checks.
 
 ---
 
@@ -174,5 +186,6 @@ These practices reinforce the core principles: specificity supports "ask before 
 | Fix a bug | "X works but Y doesn't." |
 | Clean up | "Remove the script and the tools folder." |
 | Add tests | "Add unit tests for X to reach Y% coverage." |
+| Verify rendering | "Run `npm run test:e2e` and open the Playwright report." |
 | Audit | "Are the JSDocs and README correct?" |
 | Pre-PR | "Any last issues before we open a PR?" |

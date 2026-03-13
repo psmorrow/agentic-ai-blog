@@ -6,6 +6,7 @@ Generates blog post from a question using LangGraph. Each run produces an answer
 
 - Node.js 24+ (LTS)
 - API keys: OpenAI, Google Safe Browsing, Serper
+- Google Chrome (for `npm run test:e2e`)
 
 ## Setup
 
@@ -181,9 +182,28 @@ src/
 
 | Script | Description |
 |--------|-------------|
+| `npm run server` | Start feed server (http://localhost:3000) |
 | `npm start -- "<question>" [--audience="..."] [--tone=...] [--length=...]` | Run the generator |
 | `npm run start:help` | Show usage |
-| `npm run server` | Start feed server (http://localhost:3000) |
-| `npm test` | Run unit tests |
-| `npm run test:coverage` | Tests with coverage |
-| `npm run lint` | ESLint on `src/` |
+| `npm test` | Run test:lint, test:coverage, and test:e2e |
+| `npm run test:coverage` | Unit tests with coverage |
+| `npm run test:e2e` | Playwright e2e: routes, JSON API, rendering |
+| `npm run test:e2e:ui` | Playwright e2e with UI mode |
+| `npm run test:lint` | ESLint on `src/` |
+| `npm run test:unit` | Run unit tests only |
+
+## E2E Testing
+
+Playwright tests verify routes, the JSON API, feed rendering, and single-post pages. Requires Google Chrome.
+
+```bash
+npm run test:e2e
+```
+
+Playwright starts the server automatically (or reuses one on port 3000). After a run, open the HTML report:
+
+```bash
+npx playwright show-report
+```
+
+Output: `playwright-test-results/` (traces, screenshots on failure), `playwright-report/` (HTML report).
