@@ -56,7 +56,7 @@ export function renderPostHtml(post, postsDir = "posts") {
           )
           .join("\n")}
       </ul>
-      <p class="mt-3 text-xs text-slate-500 font-normal">These are relevant search results that were found to be safe.</p>
+      <p class="mt-3 text-xs text-slate-500 font-normal">These are relevant web search results that were found to be safe.</p>
     </footer>
 `
     : "";
@@ -161,6 +161,11 @@ export function renderFeedPage({ blocks, gaScript }) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agentic AI Blog</title>
+  <style>
+    main p { margin-bottom: 1rem; }
+    main ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    main ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+  </style>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen py-12 px-4">
@@ -187,6 +192,11 @@ export function renderSinglePostPage({ dateLabel, fragment, gaScript }) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agentic AI Post</title>
+  <style>
+    main p { margin-bottom: 1rem; }
+    main ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    main ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+  </style>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen py-12 px-4">

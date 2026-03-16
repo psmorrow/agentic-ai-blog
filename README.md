@@ -97,8 +97,9 @@ The pipeline is implemented as a **LangGraph** state graph: a directed graph of 
 
 ```
 START
-  → answerNode      Generate answer (LLM)
-  → editorNode      Edit for grammar/style (LLM)
+  → answerNode      Generate initial answer (LLM)
+  → editorNode      Edit for grammar/style and clarity (LLM)
+  → formatNode      Add markdown formatting and highlight main point (LLM; no text changes)
   → verifyNode      Verify safe & relevant (LLM)
        │
        │  conditional:
@@ -128,7 +129,10 @@ State flows through the graph and is merged at each step. Key fields:
 |-------|-------------|
 | `userInput` | Question (may be edited by `editorNode`) |
 | `audience`, `tone`, `length` | Optional style params |
-| `finalAnswer` | Q&A from answer/editor nodes |
+| `finalAnswer` | Latest Q&A string (after formatting step) |
+| `rawAnswer` | Initial Q&A from `answerNode` |
+| `editedAnswer` | Q&A after `editorNode` (grammar/style edits) |
+| `formattedAnswer` | Q&A after `formatNode` (markdown formatting only) |
 | `verified` | Whether `verifyNode` passed |
 | `rejectionReason` | Reason when rejected |
 | `categories` | Topic array (from `categorizeNode`) |
@@ -148,7 +152,7 @@ After the graph completes, `index.js`:
 ### Key Design Choices
 
 - **Conditional routing**: `verifyNode` returns `verified` or `rejected`; rejected flows route to END without throwing.
-- **Verification**: `verifyNode` uses an LLM to check content policy, quality, and accuracy. On failure it sets `rejectionReason`; the user sees a generic error.
+- **Verification**: `verifyNode` uses an LLM to check content policy, quality, accuracy, and bias/inclusivity. On failure it sets `rejectionReason`; the user sees a generic error.
 - **Articles**: Fetched via Serper, then validated (SSRF, Safe Browsing, fetch, content-type, moderation). Invalid links are dropped; the footer explains these are "relevant search results."
 - **Image**: DALL·E generates a URL; `validateImageNode` runs moderation; the CLI downloads and saves locally.
 - **Retries**: LLM and API nodes use an exponential backoff retry policy for transient errors.

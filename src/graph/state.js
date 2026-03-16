@@ -6,7 +6,9 @@
 import { Annotation } from "@langchain/langgraph";
 
 /**
- * Graph state schema. Fields: userInput, audience, tone, length, finalAnswer, verified, categories, articles, articlesAttemptedCount, imageUrl, post (structured post data for JSON).
+ * Graph state schema. Fields: userInput, audience, tone, length, finalAnswer,
+ * rawAnswer, editedAnswer, formattedAnswer, verified, categories, articles,
+ * articlesAttemptedCount, imageUrl, post (structured post data for JSON).
  */
 export const State = Annotation.Root({
   userInput: Annotation(),
@@ -14,6 +16,9 @@ export const State = Annotation.Root({
   tone: Annotation(),
   length: Annotation(),
   finalAnswer: Annotation(),
+  rawAnswer: Annotation(),
+  editedAnswer: Annotation(),
+  formattedAnswer: Annotation(),
   verified: Annotation(),
   rejectionReason: Annotation(),
   categories: Annotation(),

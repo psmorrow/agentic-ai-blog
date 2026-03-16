@@ -69,12 +69,21 @@ test("createGraph and invoke", async () => {
 
   try {
     const responses = [
+      // answerNode
       "Some answer",
-      "QUESTION: What is X?\nANSWER: Some answer",
+      // editorNode
+      "QUESTION: What is X?\nANSWER: Some edited answer",
+      // formatNode
+      "Some **formatted** answer",
+      // verifyNode
       "VERIFIED",
+      // categorizeNode
       "Topic A, Topic B, Topic C",
+      // articlesNode
       '1. "Title" - Desc [Link](https://example.com)',
+      // imageNode
       "An image of X",
+      // validateImageNode (not used, but keep sequence stable)
       "VERIFIED"
     ];
     let i = 0;
@@ -130,7 +139,8 @@ test("createGraph with metricsCollector records node durations", async () => {
   try {
     const responses = [
       "Some answer",
-      "QUESTION: What is X?\nANSWER: Some answer",
+      "QUESTION: What is X?\nANSWER: Some edited answer",
+      "Some **formatted** answer",
       "VERIFIED",
       "Topic A, Topic B, Topic C",
       '1. "Title" - Desc [Link](https://example.com)',

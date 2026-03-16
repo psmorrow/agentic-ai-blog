@@ -37,8 +37,11 @@ export function createNodes({ llm, openai, config, serper }) {
       );
       const response = await llm.invoke(messages);
 
+      const finalAnswer = `Question: ${state.userInput}\n\nAnswer: ${response.content}`;
+
       return {
-        finalAnswer: `Question: ${state.userInput}\n\nAnswer: ${response.content}`
+        finalAnswer,
+        rawAnswer: finalAnswer
       };
     },
 
@@ -58,9 +61,26 @@ export function createNodes({ llm, openai, config, serper }) {
         finalAnswer: state.finalAnswer
       });
 
+      const finalAnswer = `Question: ${question}\n\nAnswer: ${answer}`;
+
       return {
         userInput: question,
-        finalAnswer: `Question: ${question}\n\nAnswer: ${answer}`
+        finalAnswer,
+        editedAnswer: finalAnswer
+      };
+    },
+
+    async formatNode(state) {
+      const answerBody = extractAnswerBody(state.finalAnswer);
+      const messages = PROMPTS.formatMessages(state.userInput, answerBody);
+      const response = await llm.invoke(messages);
+
+      const formattedAnswerBody = response.content;
+      const finalAnswer = `Question: ${state.userInput}\n\nAnswer: ${formattedAnswerBody}`;
+
+      return {
+        finalAnswer,
+        formattedAnswer: finalAnswer
       };
     },
 

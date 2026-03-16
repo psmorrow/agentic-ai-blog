@@ -39,6 +39,7 @@ Requires OPENAI_API_KEY, GOOGLE_SAFE_BROWSING_API_KEY, and SERPER_API_KEY in env
 export const NODE_LABEL_MAP = Object.freeze({
   answerNode: "Generate answer to question",
   editorNode: "Edit question and answer",
+  formatNode: "Format answer to make it more readable and engaging",
   verifyNode: "Verify question and answer are safe and relevant",
   verifiedForkNode: "Fork to categorize, articles, and image branches",
   categorizeNode: "Categorize question and answer",

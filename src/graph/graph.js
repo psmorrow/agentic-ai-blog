@@ -44,6 +44,9 @@ export function createGraph({ llm, openai, config, serper, metricsCollector }) {
     .addNode("editorNode", wrap("editorNode", nodes.editorNode), {
       retryPolicy: apiRetryPolicy
     })
+    .addNode("formatNode", wrap("formatNode", nodes.formatNode), {
+      retryPolicy: apiRetryPolicy
+    })
     .addNode("verifyNode", wrap("verifyNode", nodes.verifyNode), {
       retryPolicy: apiRetryPolicy
     })
@@ -68,7 +71,7 @@ export function createGraph({ llm, openai, config, serper, metricsCollector }) {
       { retryPolicy: apiRetryPolicy }
     )
     .addNode("outputNode", wrap("outputNode", nodes.outputNode))
-    // Flow: START -> answer -> editor -> verify
+    // Flow: START -> answer -> editor -> format -> verify
     // Conditional: verifyNode -> verified ? verifiedForkNode (fan-out) : END
     // Fan-out: verifiedForkNode runs categorizeNode, articlesNode, imageNode in parallel
     // Fan-in: outputNode runs when all three branches complete
@@ -82,7 +85,8 @@ export function createGraph({ llm, openai, config, serper, metricsCollector }) {
     //
     .addEdge(START, "answerNode")
     .addEdge("answerNode", "editorNode")
-    .addEdge("editorNode", "verifyNode")
+    .addEdge("editorNode", "formatNode")
+    .addEdge("formatNode", "verifyNode")
     // Check if the answer is verified or rejected
     .addConditionalEdges(
       "verifyNode",

@@ -65,12 +65,21 @@ test("createAgent and invoke", async () => {
 
   try {
     const responses = [
+      // answerNode
       "Some answer",
-      "QUESTION: What is Y?\nANSWER: Some answer",
+      // editorNode
+      "QUESTION: What is Y?\nANSWER: Some edited answer",
+      // formatNode
+      "Some **formatted** answer",
+      // verifyNode
       "VERIFIED",
+      // categorizeNode
       "Topic A, Topic B, Topic C",
+      // articlesNode
       '1. "Title" - Desc [Link](https://example.com)',
+      // imageNode
       "An image of Y",
+      // validateImageNode (not used, but keep sequence stable)
       "VERIFIED"
     ];
     let i = 0;

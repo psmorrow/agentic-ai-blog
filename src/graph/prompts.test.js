@@ -55,6 +55,23 @@ test("editorMessages", () => {
   assert.ok(msgs[1].content.includes("<original_answer>"));
 });
 
+test("formatMessages", () => {
+  const msgs = PROMPTS.formatMessages("Q?", "Draft answer text.");
+  assert.strictEqual(msgs.length, 2);
+  const system = msgs[0];
+  const user = msgs[1];
+
+  assert.strictEqual(system.role, "system");
+  assert.ok(system.content.includes("format it in markdown"));
+  assert.ok(system.content.includes("Do not change the wording of the answer"));
+  assert.ok(system.content.includes("**bolded** main idea"));
+
+  assert.strictEqual(user.role, "user");
+  assert.ok(user.content.includes("<answer>"));
+  assert.ok(user.content.includes("Draft answer text."));
+  assert.ok(user.content.includes("</answer>"));
+});
+
 test("categorizeMessages", () => {
   const msgs = PROMPTS.categorizeMessages("Q?", "A");
   assert.ok(msgs[0].content.includes("comma-separated"));
@@ -73,7 +90,7 @@ test("imagePromptMessages", () => {
 test("imagePromptMessages with audience, tone, length", () => {
   const msgs = PROMPTS.imagePromptMessages("gravity", "engineers", "technical", "brief");
   assert.strictEqual(msgs.length, 2);
-  assert.ok(msgs[0].content.includes("Match the style"));
+  assert.ok(msgs[0].content.includes("Match the requested style"));
   assert.ok(msgs[0].content.includes("technical"));
   assert.ok(msgs[1].content.includes("<audience>"));
   assert.ok(msgs[1].content.includes("<tone>technical</tone>"));
@@ -84,6 +101,7 @@ test("all prompts include data-only instruction", () => {
   const answerMsgs = PROMPTS.answerMessages("x");
   const verifyMsgs = PROMPTS.verifyMessages("x", "y");
   const editorMsgs = PROMPTS.editorMessages("x", "y");
+  const formatMsgs = PROMPTS.formatMessages("x", "y");
   const categorizeMsgs = PROMPTS.categorizeMessages("x", "y");
   const imageMsgs = PROMPTS.imagePromptMessages("x");
 
@@ -91,6 +109,7 @@ test("all prompts include data-only instruction", () => {
     answerMsgs[0].content,
     verifyMsgs[0].content,
     editorMsgs[0].content,
+    formatMsgs[0].content,
     categorizeMsgs[0].content,
     imageMsgs[0].content
   ];
