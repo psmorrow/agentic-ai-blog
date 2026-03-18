@@ -1,6 +1,6 @@
 # Agentic AI Blog Post Generator
 
-Generates blog post from a question using LangGraph. Each run produces an answer tailored to your audience, professionally edited and verified, with categories, recommended articles, and an AI-generated image.
+Generates blog post from a question using LangGraph. Each run produces an answer tailored to your audience, professionally edited, formatted, and verified, with categories, recommended articles, and an AI-generated image.
 
 ## Requirements
 
